@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Mirelly ❤️</title>
+    <title>Mirelly, quer namorar comigo? 💕</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,16 +14,14 @@
         }
 
         body {
-            font-family: 'Georgia', serif;
+            font-family: 'Cormorant Garamond', serif;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            cursor: none;
         }
 
-        #canvas3d {
+        #scene-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -30,101 +30,209 @@
             z-index: 1;
         }
 
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 60px 50px;
-            border-radius: 30px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-            animation: fadeInScale 1s ease-out;
-            backdrop-filter: blur(10px);
+        .custom-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
         }
 
-        @keyframes fadeInScale {
-            from {
+        .cursor-heart {
+            font-size: 40px;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            animation: heartBeat 1s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
+            pointer-events: none;
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 2px solid rgba(255, 215, 230, 0.4);
+            border-radius: 40px;
+            padding: 80px 70px;
+            text-align: center;
+            box-shadow: 
+                0 30px 90px rgba(255, 105, 180, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 100px rgba(255, 182, 193, 0.3);
+            pointer-events: all;
+            animation: floatIn 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            max-width: 700px;
+        }
+
+        .content-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @keyframes floatIn {
+            0% {
                 opacity: 0;
-                transform: scale(0.8);
+                transform: translateY(100px) scale(0.8);
             }
-            to {
+            100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0) scale(1);
             }
         }
 
         h1 {
-            font-size: 3.5em;
-            color: #d63384;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            animation: pulse 2s infinite;
+            font-family: 'Playfair Display', serif;
+            font-size: 5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            animation: gradientFlow 3s ease infinite;
+            text-shadow: 0 0 40px rgba(255, 105, 180, 0.5);
+            position: relative;
+            z-index: 1;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .subtitle {
-            font-size: 1.8em;
-            color: #555;
-            margin-bottom: 40px;
-            font-style: italic;
+            font-size: 2.2em;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 50px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
         }
 
         .question {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 40px;
-            font-weight: bold;
+            font-size: 2.5em;
+            color: #fff;
+            margin-bottom: 60px;
+            font-weight: 400;
             line-height: 1.5;
+            text-shadow: 0 2px 30px rgba(255, 105, 180, 0.8);
+            position: relative;
+            z-index: 1;
         }
 
         .buttons {
             display: flex;
-            gap: 20px;
+            gap: 30px;
             justify-content: center;
             align-items: center;
+            position: relative;
+            z-index: 1;
         }
 
         button {
-            font-size: 1.5em;
-            padding: 20px 40px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2em;
+            padding: 25px 60px;
             border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 60px;
+            cursor: none;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         #simBtn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ff1493 100%);
+            background-size: 200% 200%;
             color: white;
-            transform: scale(1);
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4),
+                            0 0 60px rgba(255, 105, 180, 0.6);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 20px 60px rgba(255, 20, 147, 0.6),
+                            0 0 80px rgba(255, 105, 180, 0.8);
+                transform: scale(1.05);
+            }
         }
 
         #simBtn:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 15px 35px rgba(245, 87, 108, 0.4);
+            transform: scale(1.15) rotate(-2deg);
+            background-position: 100% 50%;
         }
 
         #naoBtn {
-            background: #ccc;
-            color: #666;
-            position: relative;
-            font-size: 1.2em;
-            padding: 15px 30px;
+            background: rgba(100, 100, 100, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5em;
+            padding: 20px 45px;
+            backdrop-filter: blur(10px);
         }
 
         #naoBtn:hover {
-            background: #ddd;
+            background: rgba(120, 120, 120, 0.4);
         }
 
         .celebration {
@@ -134,222 +242,348 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
             justify-content: center;
             align-items: center;
         }
 
         .celebration-content {
-            background: white;
-            padding: 60px;
-            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(30px);
+            padding: 100px 80px;
+            border-radius: 50px;
             text-align: center;
-            animation: celebrationBounce 0.6s ease-out;
-            max-width: 700px;
+            animation: celebrationBounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 3px solid rgba(255, 105, 180, 0.5);
+            box-shadow: 0 0 100px rgba(255, 105, 180, 0.8);
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
         }
 
         @keyframes celebrationBounce {
             0% {
-                transform: scale(0);
+                transform: scale(0) rotate(-180deg);
                 opacity: 0;
             }
             50% {
-                transform: scale(1.1);
+                transform: scale(1.2) rotate(10deg);
             }
             100% {
-                transform: scale(1);
+                transform: scale(1) rotate(0deg);
                 opacity: 1;
             }
         }
 
         .celebration h2 {
-            font-size: 4em;
-            color: #d63384;
-            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5em;
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #ffd700, #ff69b4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            animation: rainbowGlow 3s ease infinite;
+            font-weight: 900;
+        }
+
+        @keyframes rainbowGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .celebration p {
-            font-size: 2em;
-            color: #555;
-            line-height: 1.6;
+            font-size: 2.5em;
+            color: #fff;
+            line-height: 1.8;
+            text-shadow: 0 2px 30px rgba(255, 105, 180, 0.8);
+            font-weight: 300;
         }
 
-        .hearts-container {
+        .particles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 5;
+            z-index: 100;
         }
 
-        .floating-heart {
-            position: absolute;
-            font-size: 30px;
-            opacity: 0;
-            animation: floatUp 4s ease-in infinite;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
+        @media (max-width: 768px) {
+            .content-box {
+                padding: 50px 30px;
+                margin: 20px;
             }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .sparkle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000;
-            animation: sparkleAnim 1s ease-out forwards;
-        }
-
-        @keyframes sparkleAnim {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0;
-            }
+            h1 { font-size: 3em; }
+            .subtitle { font-size: 1.5em; }
+            .question { font-size: 1.8em; }
+            button { font-size: 1.5em; padding: 20px 40px; }
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas3d"></canvas>
-    
-    <div class="hearts-container" id="heartsContainer"></div>
+    <div class="custom-cursor">
+        <div class="cursor-heart">💖</div>
+    </div>
 
-    <div class="container">
-        <h1>❤️ Mirelly ❤️</h1>
-        <p class="subtitle">Você é especial para mim...</p>
-        <p class="question">
-            Você quer namorar comigo? 💕
-        </p>
-        <div class="buttons">
-            <button id="simBtn">SIM! 😍</button>
-            <button id="naoBtn">Não</button>
+    <div id="scene-container"></div>
+    <canvas id="particles" class="particles"></canvas>
+
+    <div class="overlay">
+        <div class="content-box">
+            <h1>Mirelly</h1>
+            <p class="subtitle">Você ilumina minha vida...</p>
+            <p class="question">
+                Quer namorar comigo?
+            </p>
+            <div class="buttons">
+                <button id="simBtn">Sim! 💕</button>
+                <button id="naoBtn">Não</button>
+            </div>
         </div>
     </div>
 
     <div class="celebration" id="celebration">
+        <canvas id="fireworks" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
         <div class="celebration-content">
-            <h2>🎉 AEEEE! 🎉</h2>
+            <h2>🎉 SIM! 🎉</h2>
             <p>
-                Você acabou de me fazer a pessoa mais feliz do mundo! ❤️<br><br>
-                Prometo cuidar de você e te fazer sorrir todos os dias! 💕<br><br>
-                Te amo, Mirelly! 😍
+                Você acabou de realizar meu maior sonho! ❤️<br><br>
+                Prometo te fazer a pessoa mais feliz do mundo!<br><br>
+                Te amo infinitamente, Mirelly! 💕✨
             </p>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Configuração do Canvas 3D
-        const canvas = document.getElementById('canvas3d');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // ============= CURSOR CUSTOMIZADO =============
+        const cursor = document.querySelector('.custom-cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
 
-        // Partículas 3D de corações
-        class Heart3D {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.z = Math.random() * 1000;
-                this.size = Math.random() * 20 + 10;
-                this.speedZ = Math.random() * 2 + 1;
-                this.rotationX = Math.random() * Math.PI * 2;
-                this.rotationY = Math.random() * Math.PI * 2;
-                this.rotationSpeed = (Math.random() - 0.5) * 0.05;
-            }
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
-            update() {
-                this.z -= this.speedZ;
-                if (this.z < 1) {
-                    this.z = 1000;
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                }
-                this.rotationY += this.rotationSpeed;
-            }
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
 
-            draw() {
-                const scale = 1000 / (1000 + this.z);
-                const x = (this.x - canvas.width / 2) * scale + canvas.width / 2;
-                const y = (this.y - canvas.height / 2) * scale + canvas.height / 2;
-                const size = this.size * scale;
+        // ============= THREE.JS SCENE =============
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 1);
+        document.getElementById('scene-container').appendChild(renderer.domElement);
 
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(this.rotationY);
-                ctx.scale(Math.cos(this.rotationX), 1);
-                
-                const alpha = Math.min(scale * 0.8, 0.8);
-                ctx.fillStyle = `rgba(255, 105, 180, ${alpha})`;
-                
-                // Desenhar coração
-                ctx.beginPath();
-                ctx.moveTo(0, size * 0.3);
-                ctx.bezierCurveTo(-size * 0.5, -size * 0.3, -size * 0.8, size * 0.1, 0, size * 0.8);
-                ctx.bezierCurveTo(size * 0.8, size * 0.1, size * 0.5, -size * 0.3, 0, size * 0.3);
-                ctx.fill();
-                
-                ctx.restore();
-            }
+        camera.position.z = 50;
+
+        // ============= ILUMINAÇÃO DRAMÁTICA =============
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0xff69b4, 2, 100);
+        pointLight1.position.set(20, 20, 20);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xff1493, 2, 100);
+        pointLight2.position.set(-20, -20, 20);
+        scene.add(pointLight2);
+
+        const pointLight3 = new THREE.PointLight(0xffd700, 1.5, 100);
+        pointLight3.position.set(0, 0, 30);
+        scene.add(pointLight3);
+
+        // ============= CRIAR GEOMETRIA DE CORAÇÃO 3D =============
+        function createHeartShape() {
+            const heartShape = new THREE.Shape();
+            const x = 0, y = 0;
+            heartShape.moveTo(x + 5, y + 5);
+            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+            return heartShape;
         }
 
-        // Criar corações 3D
+        // ============= CORAÇÕES 3D FLUTUANTES =============
         const hearts3D = [];
-        for (let i = 0; i < 50; i++) {
-            hearts3D.push(new Heart3D());
-        }
+        const heartShape = createHeartShape();
+        
+        for (let i = 0; i < 30; i++) {
+            const extrudeSettings = {
+                depth: 2,
+                bevelEnabled: true,
+                bevelSegments: 5,
+                steps: 2,
+                bevelSize: 0.5,
+                bevelThickness: 0.5
+            };
 
-        function animate3D() {
-            ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
             
-            hearts3D.forEach(heart => {
-                heart.update();
-                heart.draw();
+            const material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color().setHSL(Math.random() * 0.1 + 0.9, 1, 0.6),
+                emissive: new THREE.Color(0xff69b4),
+                emissiveIntensity: 0.3,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.8
             });
+
+            const heart = new THREE.Mesh(geometry, material);
             
-            requestAnimationFrame(animate3D);
-        }
-        animate3D();
-
-        // Corações flutuantes
-        function createFloatingHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'floating-heart';
-            heart.textContent = '💖';
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 2 + 's';
-            heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
-            document.getElementById('heartsContainer').appendChild(heart);
+            heart.position.x = (Math.random() - 0.5) * 100;
+            heart.position.y = (Math.random() - 0.5) * 100;
+            heart.position.z = (Math.random() - 0.5) * 100;
             
-            setTimeout(() => heart.remove(), 4000);
+            heart.rotation.x = Math.random() * Math.PI;
+            heart.rotation.y = Math.random() * Math.PI;
+            
+            const scale = Math.random() * 0.5 + 0.5;
+            heart.scale.set(scale, scale, scale);
+            
+            heart.userData = {
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.02,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.02
+                },
+                floatSpeed: Math.random() * 0.02 + 0.01,
+                floatOffset: Math.random() * Math.PI * 2
+            };
+            
+            scene.add(heart);
+            hearts3D.push(heart);
         }
 
-        setInterval(createFloatingHeart, 300);
+        // ============= PARTÍCULAS BRILHANTES =============
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 3000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorsArray = new Float32Array(particlesCount * 3);
 
-        // Botões
+        for(let i = 0; i < particlesCount * 3; i += 3) {
+            posArray[i] = (Math.random() - 0.5) * 200;
+            posArray[i + 1] = (Math.random() - 0.5) * 200;
+            posArray[i + 2] = (Math.random() - 0.5) * 200;
+            
+            const color = new THREE.Color().setHSL(Math.random() * 0.1 + 0.9, 1, 0.7);
+            colorsArray[i] = color.r;
+            colorsArray[i + 1] = color.g;
+            colorsArray[i + 2] = color.b;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // ============= ANIMAÇÃO =============
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+
+            // Animar corações
+            hearts3D.forEach((heart, index) => {
+                heart.rotation.x += heart.userData.rotationSpeed.x;
+                heart.rotation.y += heart.userData.rotationSpeed.y;
+                heart.rotation.z += heart.userData.rotationSpeed.z;
+                
+                heart.position.y += Math.sin(time + heart.userData.floatOffset) * 0.05;
+                heart.position.x += Math.cos(time * 0.5 + heart.userData.floatOffset) * 0.03;
+            });
+
+            // Animar partículas
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+
+            // Animar luzes
+            pointLight1.position.x = Math.sin(time) * 30;
+            pointLight1.position.y = Math.cos(time) * 30;
+            
+            pointLight2.position.x = Math.cos(time * 1.5) * 30;
+            pointLight2.position.y = Math.sin(time * 1.5) * 30;
+
+            // Rotação suave da câmera
+            camera.position.x = Math.sin(time * 0.1) * 5;
+            camera.position.y = Math.cos(time * 0.15) * 3;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // ============= PARTÍCULAS 2D ROMÂNTICAS =============
+        const canvas2D = document.getElementById('particles');
+        const ctx = canvas2D.getContext('2d');
+        canvas2D.width = window.innerWidth;
+        canvas2D.height = window.innerHeight;
+
+        class Particle2D {
+            constructor() {
+                this.x = Math.random() * canvas2D.width;
+                this.y = Math.random() * canvas2D.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `hsl(${Math.random() * 60 + 300}, 100%, ${Math.random() * 30 + 60}%)`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas2D.width) this.x = 0;
+                if (this.x < 0) this.x = canvas2D.width;
+                if (this.y > canvas2D.height) this.y = 0;
+                if (this.y < 0) this.y = canvas2D.height;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particles2D = [];
+        for (let i = 0; i < 100; i++) {
+            particles2D.push(new Particle2D());
+        }
+
+        function animateParticles2D() {
+            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+            particles2D.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animateParticles2D);
+        }
+        animateParticles2D();
+
+        // ============= BOTÕES =============
         const simBtn = document.getElementById('simBtn');
         const naoBtn = document.getElementById('naoBtn');
         const celebration = document.getElementById('celebration');
@@ -357,116 +591,155 @@
         simBtn.addEventListener('click', () => {
             celebration.style.display = 'flex';
             createFireworks();
-            playConfetti();
+            createExplosion();
         });
 
-        // Botão "Não" fugindo
+        // Botão "Não" fugitivo
         let naoAttempts = 0;
         naoBtn.addEventListener('mouseenter', () => {
             naoAttempts++;
-            const x = Math.random() * (window.innerWidth - 200);
-            const y = Math.random() * (window.innerHeight - 100);
+            const x = Math.random() * (window.innerWidth - 300) + 50;
+            const y = Math.random() * (window.innerHeight - 150) + 50;
             naoBtn.style.position = 'fixed';
             naoBtn.style.left = x + 'px';
             naoBtn.style.top = y + 'px';
+            naoBtn.style.transition = 'all 0.3s ease';
             
-            if (naoAttempts > 3) {
-                naoBtn.textContent = 'Por favor? 🥺';
+            if (naoAttempts > 2) {
+                naoBtn.textContent = 'Clica no SIM! 🥺';
             }
-            if (naoAttempts > 6) {
-                naoBtn.textContent = 'Só clica no SIM! 💕';
-                naoBtn.style.fontSize = '0.8em';
+            if (naoAttempts > 5) {
+                naoBtn.textContent = 'Por favor? 💕';
+                naoBtn.style.fontSize = '1.2em';
+            }
+            if (naoAttempts > 8) {
+                naoBtn.textContent = 'Vai... 🥹';
+                naoBtn.style.fontSize = '1em';
             }
         });
 
-        // Confetes
-        function playConfetti() {
+        // ============= FOGOS DE ARTIFÍCIO =============
+        function createFireworks() {
+            const fireworksCanvas = document.getElementById('fireworks');
+            const fCtx = fireworksCanvas.getContext('2d');
+            fireworksCanvas.width = window.innerWidth;
+            fireworksCanvas.height = window.innerHeight;
+
+            class Firework {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.particles = [];
+                    for (let i = 0; i < 50; i++) {
+                        this.particles.push({
+                            x: x,
+                            y: y,
+                            vx: (Math.random() - 0.5) * 10,
+                            vy: (Math.random() - 0.5) * 10,
+                            alpha: 1,
+                            color: `hsl(${Math.random() * 60 + 300}, 100%, 60%)`
+                        });
+                    }
+                }
+                update() {
+                    this.particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.1;
+                        p.alpha -= 0.01;
+                    });
+                    this.particles = this.particles.filter(p => p.alpha > 0);
+                }
+                draw() {
+                    this.particles.forEach(p => {
+                        fCtx.globalAlpha = p.alpha;
+                        fCtx.fillStyle = p.color;
+                        fCtx.beginPath();
+                        fCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                        fCtx.fill();
+                    });
+                }
+            }
+
+            const fireworks = [];
+            function addFirework() {
+                const x = Math.random() * fireworksCanvas.width;
+                const y = Math.random() * fireworksCanvas.height * 0.5;
+                fireworks.push(new Firework(x, y));
+            }
+
+            const interval = setInterval(addFirework, 200);
+
+            function animateFireworks() {
+                fCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                fCtx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+                
+                fireworks.forEach((fw, index) => {
+                    fw.update();
+                    fw.draw();
+                    if (fw.particles.length === 0) {
+                        fireworks.splice(index, 1);
+                    }
+                });
+
+                if (fireworks.length > 0 || Date.now() < startTime + 5000) {
+                    requestAnimationFrame(animateFireworks);
+                } else {
+                    clearInterval(interval);
+                }
+            }
+
+            const startTime = Date.now();
+            animateFireworks();
+        }
+
+        // ============= EXPLOSÃO DE CORAÇÕES =============
+        function createExplosion() {
             for (let i = 0; i < 100; i++) {
                 setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.style.position = 'fixed';
-                    confetti.style.left = Math.random() * window.innerWidth + 'px';
-                    confetti.style.top = -20 + 'px';
-                    confetti.style.width = '10px';
-                    confetti.style.height = '10px';
-                    confetti.style.background = ['#ff0066', '#ff6600', '#ffcc00', '#00ff66', '#0066ff'][Math.floor(Math.random() * 5)];
-                    confetti.style.zIndex = '1000';
-                    confetti.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-                    document.body.appendChild(confetti);
-                    
-                    let pos = -20;
+                    const heart = document.createElement('div');
+                    heart.textContent = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random() * 5)];
+                    heart.style.position = 'fixed';
+                    heart.style.left = window.innerWidth / 2 + 'px';
+                    heart.style.top = window.innerHeight / 2 + 'px';
+                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    heart.style.zIndex = '10000';
+                    heart.style.pointerEvents = 'none';
+                    document.body.appendChild(heart);
+
+                    const angle = (Math.PI * 2 * i) / 100;
+                    const velocity = Math.random() * 10 + 5;
+                    let vx = Math.cos(angle) * velocity;
+                    let vy = Math.sin(angle) * velocity;
+                    let x = window.innerWidth / 2;
+                    let y = window.innerHeight / 2;
                     let rotation = 0;
-                    const fall = setInterval(() => {
-                        pos += 5;
+
+                    const move = setInterval(() => {
+                        x += vx;
+                        y += vy;
+                        vy += 0.3;
                         rotation += 10;
-                        confetti.style.top = pos + 'px';
-                        confetti.style.transform = 'rotate(' + rotation + 'deg)';
-                        
-                        if (pos > window.innerHeight) {
-                            clearInterval(fall);
-                            confetti.remove();
+                        heart.style.left = x + 'px';
+                        heart.style.top = y + 'px';
+                        heart.style.transform = `rotate(${rotation}deg)`;
+
+                        if (y > window.innerHeight + 100) {
+                            clearInterval(move);
+                            heart.remove();
                         }
                     }, 20);
-                }, i * 30);
+                }, i * 10);
             }
         }
 
-        // Fogos de artifício
-        function createFireworks() {
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    const x = Math.random() * window.innerWidth;
-                    const y = Math.random() * window.innerHeight * 0.5;
-                    
-                    for (let j = 0; j < 30; j++) {
-                        const sparkle = document.createElement('div');
-                        sparkle.className = 'sparkle';
-                        sparkle.style.left = x + 'px';
-                        sparkle.style.top = y + 'px';
-                        
-                        const angle = (Math.PI * 2 * j) / 30;
-                        const velocity = Math.random() * 100 + 50;
-                        
-                        document.body.appendChild(sparkle);
-                        
-                        let distance = 0;
-                        const expand = setInterval(() => {
-                            distance += velocity / 20;
-                            sparkle.style.left = (x + Math.cos(angle) * distance) + 'px';
-                            sparkle.style.top = (y + Math.sin(angle) * distance) + 'px';
-                            
-                            if (distance > 100) {
-                                clearInterval(expand);
-                                sparkle.remove();
-                            }
-                        }, 20);
-                    }
-                }, i * 400);
-            }
-        }
-
-        // Resize
+        // ============= RESIZE =============
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Efeito de cursor com corações
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.9) {
-                const heart = document.createElement('div');
-                heart.textContent = '💕';
-                heart.style.position = 'fixed';
-                heart.style.left = e.clientX + 'px';
-                heart.style.top = e.clientY + 'px';
-                heart.style.pointerEvents = 'none';
-                heart.style.fontSize = '20px';
-                heart.style.zIndex = '1000';
-                heart.style.animation = 'floatUp 2s ease-out forwards';
-                document.body.appendChild(heart);
-                
-                setTimeout(() => heart.remove(), 2000);
-            }
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            canvas2D.width = window.innerWidth;
+            canvas2D.height = window.innerHeight;
         });
     </script>
 </body>
