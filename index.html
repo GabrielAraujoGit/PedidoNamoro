@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Um convite especial e romântico">
     <title>Mirelly, quer namorar comigo? 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #ff1493;
+            --secondary-pink: #ff69b4;
+            --light-pink: #ffb6c1;
+            --white-glass: rgba(255, 255, 255, 0.15);
+            --transition-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
@@ -18,8 +30,53 @@
             background: #000;
             height: 100vh;
             cursor: none;
+            position: relative;
         }
 
+        /* ========== LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000 0%, #1a0010 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: '💕';
+            position: absolute;
+            font-size: 60px;
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        .loader::after {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ========== CANVAS LAYERS ========== */
         #scene-container {
             position: fixed;
             top: 0;
@@ -29,6 +86,28 @@
             z-index: 1;
         }
 
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* ========== CUSTOM CURSOR ========== */
         .custom-cursor {
             position: fixed;
             width: 40px;
@@ -36,6 +115,7 @@
             pointer-events: none;
             z-index: 10000;
             mix-blend-mode: difference;
+            transition: transform 0.1s ease;
         }
 
         .cursor-heart {
@@ -50,6 +130,7 @@
             50% { transform: translate(-50%, -50%) scale(1.2); }
         }
 
+        /* ========== OVERLAY & CONTENT ========== */
         .overlay {
             position: fixed;
             top: 0;
@@ -62,24 +143,29 @@
             align-items: center;
             background: radial-gradient(ellipse at center, rgba(139, 69, 19, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
             pointer-events: none;
+            padding: 20px;
         }
 
         .content-box {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            background: linear-gradient(135deg, var(--white-glass) 0%, rgba(255, 255, 255, 0.05) 100%);
             backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 2px solid rgba(255, 215, 230, 0.4);
             border-radius: 40px;
-            padding: 80px 70px;
+            padding: 60px 50px;
             text-align: center;
             box-shadow: 
                 0 30px 90px rgba(255, 105, 180, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3),
                 0 0 100px rgba(255, 182, 193, 0.3);
             pointer-events: all;
-            animation: floatIn 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: floatIn 1.5s var(--transition-smooth);
             position: relative;
             overflow: hidden;
             max-width: 700px;
+            width: 100%;
+            transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .content-box::before {
@@ -102,24 +188,24 @@
         @keyframes floatIn {
             0% {
                 opacity: 0;
-                transform: translateY(100px) scale(0.8);
+                transform: translateY(100px) scale(0.8) rotateX(20deg);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0) scale(1) rotateX(0deg);
             }
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 5em;
+            font-size: clamp(2.5em, 8vw, 5em);
             font-weight: 900;
-            background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
+            background: linear-gradient(135deg, var(--secondary-pink), var(--primary-pink), var(--secondary-pink));
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             letter-spacing: 2px;
             animation: gradientFlow 3s ease infinite;
             text-shadow: 0 0 40px rgba(255, 105, 180, 0.5);
@@ -133,9 +219,9 @@
         }
 
         .subtitle {
-            font-size: 2.2em;
+            font-size: clamp(1.3em, 4vw, 2.2em);
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             font-weight: 300;
             letter-spacing: 1px;
             text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
@@ -144,9 +230,9 @@
         }
 
         .question {
-            font-size: 2.5em;
+            font-size: clamp(1.5em, 5vw, 2.5em);
             color: #fff;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             font-weight: 400;
             line-height: 1.5;
             text-shadow: 0 2px 30px rgba(255, 105, 180, 0.8);
@@ -156,27 +242,29 @@
 
         .buttons {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             align-items: center;
             position: relative;
             z-index: 1;
+            flex-wrap: wrap;
         }
 
         button {
             font-family: 'Playfair Display', serif;
-            font-size: 2em;
-            padding: 25px 60px;
+            font-size: clamp(1.3em, 4vw, 2em);
+            padding: 20px 50px;
             border: none;
             border-radius: 60px;
             cursor: none;
             font-weight: 700;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s var(--transition-smooth);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
             letter-spacing: 2px;
             text-transform: uppercase;
             position: relative;
             overflow: hidden;
+            will-change: transform;
         }
 
         button::before {
@@ -198,7 +286,7 @@
         }
 
         #simBtn {
-            background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ff1493 100%);
+            background: linear-gradient(135deg, var(--primary-pink) 0%, var(--secondary-pink) 50%, var(--primary-pink) 100%);
             background-size: 200% 200%;
             color: white;
             animation: pulseGlow 2s ease-in-out infinite;
@@ -225,521 +313,845 @@
         #naoBtn {
             background: rgba(100, 100, 100, 0.3);
             color: rgba(255, 255, 255, 0.6);
-            font-size: 1.5em;
-            padding: 20px 45px;
+            font-size: clamp(1em, 3vw, 1.5em);
+            padding: 15px 40px;
             backdrop-filter: blur(10px);
         }
 
         #naoBtn:hover {
             background: rgba(120, 120, 120, 0.4);
+            transform: scale(1.05);
         }
 
-        .celebration {
+        /* ========== CELEBRATION SCREEN ========== */
+        #celebration {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: radial-gradient(ellipse at center, rgba(255, 20, 147, 0.3) 0%, rgba(0, 0, 0, 0.9) 100%);
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.95);
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .celebration-content {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(30px);
-            padding: 100px 80px;
-            border-radius: 50px;
             text-align: center;
-            animation: celebrationBounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border: 3px solid rgba(255, 105, 180, 0.5);
-            box-shadow: 0 0 100px rgba(255, 105, 180, 0.8);
-            max-width: 900px;
-            position: relative;
-            z-index: 1;
+            padding: 20px;
+        }
+
+        .celebration-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5em, 10vw, 6em);
+            color: var(--secondary-pink);
+            margin-bottom: 30px;
+            animation: celebrationBounce 1s ease infinite;
         }
 
         @keyframes celebrationBounce {
-            0% {
-                transform: scale(0) rotate(-180deg);
-                opacity: 0;
-            }
-            50% {
-                transform: scale(1.2) rotate(10deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
         }
 
-        .celebration h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 5.5em;
-            background: linear-gradient(135deg, #ff69b4, #ff1493, #ffd700, #ff69b4);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 40px;
-            animation: rainbowGlow 3s ease infinite;
-            font-weight: 900;
+        .celebration-content p {
+            font-size: clamp(1.3em, 5vw, 2.5em);
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
         }
 
-        @keyframes rainbowGlow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .celebration p {
-            font-size: 2.5em;
-            color: #fff;
-            line-height: 1.8;
-            text-shadow: 0 2px 30px rgba(255, 105, 180, 0.8);
-            font-weight: 300;
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 100;
-        }
-
+        /* ========== RESPONSIVE DESIGN ========== */
         @media (max-width: 768px) {
             .content-box {
-                padding: 50px 30px;
-                margin: 20px;
+                padding: 40px 30px;
+                border-radius: 30px;
             }
-            h1 { font-size: 3em; }
-            .subtitle { font-size: 1.5em; }
-            .question { font-size: 1.8em; }
-            button { font-size: 1.5em; padding: 20px 40px; }
+
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-box {
+                padding: 30px 20px;
+            }
+        }
+
+        /* ========== PERFORMANCE OPTIMIZATIONS ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Custom Cursor -->
     <div class="custom-cursor">
         <div class="cursor-heart">💖</div>
     </div>
 
+    <!-- Canvas Layers -->
     <div id="scene-container"></div>
-    <canvas id="particles" class="particles"></canvas>
+    <canvas id="particles"></canvas>
+    <canvas id="fireworks"></canvas>
 
+    <!-- Main Content -->
     <div class="overlay">
         <div class="content-box">
             <h1>Mirelly</h1>
-            <p class="subtitle">Você ilumina minha vida...</p>
-            <p class="question">
-                Quer namorar comigo?
-            </p>
+            <p class="subtitle">A pessoa mais especial do mundo</p>
+            <p class="question">Quer namorar comigo? 💕</p>
             <div class="buttons">
-                <button id="simBtn">Sim! 💕</button>
+                <button id="simBtn">Sim! 💖</button>
                 <button id="naoBtn">Não</button>
             </div>
         </div>
     </div>
 
-    <div class="celebration" id="celebration">
-        <canvas id="fireworks" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+    <!-- Celebration Screen -->
+    <div id="celebration">
+        <canvas id="fireworks"></canvas>
         <div class="celebration-content">
-            <h2>🎉 SIM! 🎉</h2>
-            <p>
-                Você acabou de realizar meu maior sonho! ❤️<br><br>
-                Prometo te fazer a pessoa mais feliz do mundo!<br><br>
-                Te amo infinitamente, Mirelly! 💕✨
-            </p>
+            <h2>SIIIIM! 🎉💕</h2>
+            <p>Você me fez a pessoa mais feliz do mundo!</p>
+            <p>💖 Te amo muito! 💖</p>
         </div>
     </div>
 
+    <!-- Three.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script>
-        // ============= CURSOR CUSTOMIZADO =============
-        const cursor = document.querySelector('.custom-cursor');
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
+        'use strict';
 
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        // ============= UTILITY FUNCTIONS =============
+        const Utils = {
+            // Throttle function for performance
+            throttle: (func, limit) => {
+                let inThrottle;
+                return function(...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
 
-        function animateCursor() {
-            cursorX += (mouseX - cursorX) * 0.15;
-            cursorY += (mouseY - cursorY) * 0.15;
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
+            // Debounce function for resize events
+            debounce: (func, wait) => {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            },
 
-        // ============= THREE.JS SCENE =============
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 1);
-        document.getElementById('scene-container').appendChild(renderer.domElement);
+            // Random range
+            randomRange: (min, max) => Math.random() * (max - min) + min,
 
-        camera.position.z = 50;
+            // Check if device supports WebGL
+            hasWebGLSupport: () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    return !!(window.WebGLRenderingContext && 
+                        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+                } catch(e) {
+                    return false;
+                }
+            }
+        };
 
-        // ============= ILUMINAÇÃO DRAMÁTICA =============
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(ambientLight);
+        // ============= CUSTOM CURSOR =============
+        class CustomCursor {
+            constructor() {
+                this.cursor = document.querySelector('.custom-cursor');
+                this.init();
+            }
 
-        const pointLight1 = new THREE.PointLight(0xff69b4, 2, 100);
-        pointLight1.position.set(20, 20, 20);
-        scene.add(pointLight1);
+            init() {
+                document.addEventListener('mousemove', Utils.throttle((e) => {
+                    this.cursor.style.left = e.clientX + 'px';
+                    this.cursor.style.top = e.clientY + 'px';
+                }, 10));
 
-        const pointLight2 = new THREE.PointLight(0xff1493, 2, 100);
-        pointLight2.position.set(-20, -20, 20);
-        scene.add(pointLight2);
+                document.addEventListener('mousedown', () => {
+                    this.cursor.style.transform = 'scale(0.8)';
+                });
 
-        const pointLight3 = new THREE.PointLight(0xffd700, 1.5, 100);
-        pointLight3.position.set(0, 0, 30);
-        scene.add(pointLight3);
-
-        // ============= CRIAR GEOMETRIA DE CORAÇÃO 3D =============
-        function createHeartShape() {
-            const heartShape = new THREE.Shape();
-            const x = 0, y = 0;
-            heartShape.moveTo(x + 5, y + 5);
-            heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
-            heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
-            heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
-            heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
-            heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
-            heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
-            return heartShape;
-        }
-
-        // ============= CORAÇÕES 3D FLUTUANTES =============
-        const hearts3D = [];
-        const heartShape = createHeartShape();
-        
-        for (let i = 0; i < 30; i++) {
-            const extrudeSettings = {
-                depth: 2,
-                bevelEnabled: true,
-                bevelSegments: 5,
-                steps: 2,
-                bevelSize: 0.5,
-                bevelThickness: 0.5
-            };
-
-            const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-            
-            const material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color().setHSL(Math.random() * 0.1 + 0.9, 1, 0.6),
-                emissive: new THREE.Color(0xff69b4),
-                emissiveIntensity: 0.3,
-                shininess: 100,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            const heart = new THREE.Mesh(geometry, material);
-            
-            heart.position.x = (Math.random() - 0.5) * 100;
-            heart.position.y = (Math.random() - 0.5) * 100;
-            heart.position.z = (Math.random() - 0.5) * 100;
-            
-            heart.rotation.x = Math.random() * Math.PI;
-            heart.rotation.y = Math.random() * Math.PI;
-            
-            const scale = Math.random() * 0.5 + 0.5;
-            heart.scale.set(scale, scale, scale);
-            
-            heart.userData = {
-                rotationSpeed: {
-                    x: (Math.random() - 0.5) * 0.02,
-                    y: (Math.random() - 0.5) * 0.02,
-                    z: (Math.random() - 0.5) * 0.02
-                },
-                floatSpeed: Math.random() * 0.02 + 0.01,
-                floatOffset: Math.random() * Math.PI * 2
-            };
-            
-            scene.add(heart);
-            hearts3D.push(heart);
+                document.addEventListener('mouseup', () => {
+                    this.cursor.style.transform = 'scale(1)';
+                });
+            }
         }
 
-        // ============= PARTÍCULAS BRILHANTES =============
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 3000;
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorsArray = new Float32Array(particlesCount * 3);
-
-        for(let i = 0; i < particlesCount * 3; i += 3) {
-            posArray[i] = (Math.random() - 0.5) * 200;
-            posArray[i + 1] = (Math.random() - 0.5) * 200;
-            posArray[i + 2] = (Math.random() - 0.5) * 200;
-            
-            const color = new THREE.Color().setHSL(Math.random() * 0.1 + 0.9, 1, 0.7);
-            colorsArray[i] = color.r;
-            colorsArray[i + 1] = color.g;
-            colorsArray[i + 2] = color.b;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
-
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-
-        // ============= ANIMAÇÃO =============
-        let time = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.01;
-
-            // Animar corações
-            hearts3D.forEach((heart, index) => {
-                heart.rotation.x += heart.userData.rotationSpeed.x;
-                heart.rotation.y += heart.userData.rotationSpeed.y;
-                heart.rotation.z += heart.userData.rotationSpeed.z;
+        // ============= 3D SCENE MANAGER =============
+        class SceneManager {
+            constructor() {
+                this.container = document.getElementById('scene-container');
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.hearts = [];
+                this.particlesMesh = null;
+                this.lights = [];
+                this.clock = new THREE.Clock();
                 
-                heart.position.y += Math.sin(time + heart.userData.floatOffset) * 0.05;
-                heart.position.x += Math.cos(time * 0.5 + heart.userData.floatOffset) * 0.03;
-            });
+                if (Utils.hasWebGLSupport()) {
+                    this.init();
+                    this.createLights();
+                    this.createHearts();
+                    this.createParticles();
+                    this.createEnvironment();
+                    this.animate();
+                }
+            }
 
-            // Animar partículas
-            particlesMesh.rotation.y += 0.001;
-            particlesMesh.rotation.x += 0.0005;
+            init() {
+                // Scene
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x000000, 0.01);
 
-            // Animar luzes
-            pointLight1.position.x = Math.sin(time) * 30;
-            pointLight1.position.y = Math.cos(time) * 30;
-            
-            pointLight2.position.x = Math.cos(time * 1.5) * 30;
-            pointLight2.position.y = Math.sin(time * 1.5) * 30;
+                // Camera
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.z = 50;
 
-            // Rotação suave da câmera
-            camera.position.x = Math.sin(time * 0.1) * 5;
-            camera.position.y = Math.cos(time * 0.15) * 3;
-            camera.lookAt(scene.position);
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: true, 
+                    alpha: true,
+                    powerPreference: "high-performance"
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                this.container.appendChild(this.renderer.domElement);
+            }
 
-            renderer.render(scene, camera);
+            createLights() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+                this.scene.add(ambientLight);
+
+                // Point lights
+                const light1 = new THREE.PointLight(0xff1493, 2, 100);
+                light1.position.set(30, 30, 30);
+                light1.castShadow = true;
+                this.scene.add(light1);
+                this.lights.push(light1);
+
+                const light2 = new THREE.PointLight(0xff69b4, 2, 100);
+                light2.position.set(-30, -30, 30);
+                light2.castShadow = true;
+                this.scene.add(light2);
+                this.lights.push(light2);
+
+                const light3 = new THREE.PointLight(0xffb6c1, 1.5, 100);
+                light3.position.set(0, 40, -30);
+                this.scene.add(light3);
+                this.lights.push(light3);
+
+                // Directional light
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                directionalLight.position.set(10, 10, 10);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+            }
+
+            createHearts() {
+                const heartShape = new THREE.Shape();
+                heartShape.moveTo(0, 0);
+                heartShape.bezierCurveTo(0, -0.3, -0.6, -0.3, -0.6, 0);
+                heartShape.bezierCurveTo(-0.6, 0.3, 0, 0.6, 0, 1);
+                heartShape.bezierCurveTo(0, 0.6, 0.6, 0.3, 0.6, 0);
+                heartShape.bezierCurveTo(0.6, -0.3, 0, -0.3, 0, 0);
+
+                const extrudeSettings = {
+                    depth: 0.4,
+                    bevelEnabled: true,
+                    bevelThickness: 0.1,
+                    bevelSize: 0.1,
+                    bevelSegments: 5
+                };
+
+                const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+                
+                for (let i = 0; i < 30; i++) {
+                    const material = new THREE.MeshPhongMaterial({
+                        color: new THREE.Color().setHSL(Math.random() * 0.1 + 0.85, 1, 0.6),
+                        emissive: 0xff1493,
+                        emissiveIntensity: 0.3,
+                        shininess: 100,
+                        transparent: true,
+                        opacity: 0.8
+                    });
+
+                    const heart = new THREE.Mesh(geometry, material);
+                    
+                    heart.position.set(
+                        Utils.randomRange(-50, 50),
+                        Utils.randomRange(-50, 50),
+                        Utils.randomRange(-50, 50)
+                    );
+                    
+                    heart.rotation.set(
+                        Math.random() * Math.PI,
+                        Math.random() * Math.PI,
+                        Math.random() * Math.PI
+                    );
+                    
+                    const scale = Utils.randomRange(1, 3);
+                    heart.scale.set(scale, scale, scale);
+                    
+                    heart.userData = {
+                        rotationSpeed: Utils.randomRange(0.001, 0.003),
+                        floatOffset: Math.random() * Math.PI * 2,
+                        floatSpeed: Utils.randomRange(0.5, 1.5)
+                    };
+                    
+                    heart.castShadow = true;
+                    heart.receiveShadow = true;
+                    
+                    this.scene.add(heart);
+                    this.hearts.push(heart);
+                }
+            }
+
+            createParticles() {
+                const particlesGeometry = new THREE.BufferGeometry();
+                const particlesCount = 3000;
+                const positions = new Float32Array(particlesCount * 3);
+                const colors = new Float32Array(particlesCount * 3);
+
+                for (let i = 0; i < particlesCount * 3; i += 3) {
+                    positions[i] = Utils.randomRange(-100, 100);
+                    positions[i + 1] = Utils.randomRange(-100, 100);
+                    positions[i + 2] = Utils.randomRange(-100, 100);
+
+                    const color = new THREE.Color().setHSL(Math.random() * 0.1 + 0.85, 1, 0.6);
+                    colors[i] = color.r;
+                    colors[i + 1] = color.g;
+                    colors[i + 2] = color.b;
+                }
+
+                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const particlesMaterial = new THREE.PointsMaterial({
+                    size: 0.3,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending
+                });
+
+                this.particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+                this.scene.add(this.particlesMesh);
+            }
+
+            createEnvironment() {
+                // Create ethereal rings
+                const ringGeometry = new THREE.TorusGeometry(40, 0.5, 16, 100);
+                const ringMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xff69b4,
+                    emissive: 0xff1493,
+                    emissiveIntensity: 0.5,
+                    transparent: true,
+                    opacity: 0.3,
+                    shininess: 100
+                });
+
+                for (let i = 0; i < 3; i++) {
+                    const ring = new THREE.Mesh(ringGeometry, ringMaterial.clone());
+                    ring.rotation.x = Math.random() * Math.PI;
+                    ring.rotation.y = Math.random() * Math.PI;
+                    ring.userData.rotationSpeed = Utils.randomRange(0.0005, 0.001);
+                    this.scene.add(ring);
+                    this.hearts.push(ring);
+                }
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+
+                const time = this.clock.getElapsedTime();
+
+                // Animate hearts
+                this.hearts.forEach(heart => {
+                    heart.rotation.x += heart.userData.rotationSpeed || 0.001;
+                    heart.rotation.y += heart.userData.rotationSpeed || 0.001;
+                    
+                    if (heart.userData.floatOffset !== undefined) {
+                        heart.position.y += Math.sin(time * heart.userData.floatSpeed + heart.userData.floatOffset) * 0.05;
+                        heart.position.x += Math.cos(time * 0.5 * heart.userData.floatSpeed + heart.userData.floatOffset) * 0.03;
+                    }
+                });
+
+                // Animate particles
+                if (this.particlesMesh) {
+                    this.particlesMesh.rotation.y += 0.001;
+                    this.particlesMesh.rotation.x += 0.0005;
+                }
+
+                // Animate lights
+                if (this.lights.length >= 2) {
+                    this.lights[0].position.x = Math.sin(time) * 30;
+                    this.lights[0].position.y = Math.cos(time) * 30;
+                    
+                    this.lights[1].position.x = Math.cos(time * 1.5) * 30;
+                    this.lights[1].position.y = Math.sin(time * 1.5) * 30;
+                }
+
+                // Camera movement
+                this.camera.position.x = Math.sin(time * 0.1) * 5;
+                this.camera.position.y = Math.cos(time * 0.15) * 3;
+                this.camera.lookAt(this.scene.position);
+
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            handleResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            dispose() {
+                this.hearts.forEach(heart => {
+                    if (heart.geometry) heart.geometry.dispose();
+                    if (heart.material) heart.material.dispose();
+                });
+                if (this.particlesMesh) {
+                    this.particlesMesh.geometry.dispose();
+                    this.particlesMesh.material.dispose();
+                }
+                this.renderer.dispose();
+            }
         }
-        animate();
 
-        // ============= PARTÍCULAS 2D ROMÂNTICAS =============
-        const canvas2D = document.getElementById('particles');
-        const ctx = canvas2D.getContext('2d');
-        canvas2D.width = window.innerWidth;
-        canvas2D.height = window.innerHeight;
+        // ============= 2D PARTICLES MANAGER =============
+        class ParticlesManager {
+            constructor() {
+                this.canvas = document.getElementById('particles');
+                this.ctx = this.canvas.getContext('2d', { alpha: true });
+                this.particles = [];
+                this.init();
+            }
+
+            init() {
+                this.resize();
+                this.createParticles();
+                this.animate();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createParticles() {
+                const count = Math.min(150, Math.floor((window.innerWidth * window.innerHeight) / 10000));
+                for (let i = 0; i < count; i++) {
+                    this.particles.push(new Particle2D(this.canvas));
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    particle.update();
+                    particle.draw(this.ctx);
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+
+            handleResize() {
+                this.resize();
+                this.particles = [];
+                this.createParticles();
+            }
+        }
 
         class Particle2D {
-            constructor() {
-                this.x = Math.random() * canvas2D.width;
-                this.y = Math.random() * canvas2D.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.color = `hsl(${Math.random() * 60 + 300}, 100%, ${Math.random() * 30 + 60}%)`;
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.reset();
             }
+
+            reset() {
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Utils.randomRange(1, 4);
+                this.speedX = Utils.randomRange(-1, 1);
+                this.speedY = Utils.randomRange(-1, 1);
+                this.color = `hsl(${Utils.randomRange(300, 360)}, 100%, ${Utils.randomRange(60, 90)}%)`;
+                this.opacity = Utils.randomRange(0.3, 0.8);
+            }
+
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                if (this.x > canvas2D.width) this.x = 0;
-                if (this.x < 0) this.x = canvas2D.width;
-                if (this.y > canvas2D.height) this.y = 0;
-                if (this.y < 0) this.y = canvas2D.height;
+
+                if (this.x > this.canvas.width) this.x = 0;
+                if (this.x < 0) this.x = this.canvas.width;
+                if (this.y > this.canvas.height) this.y = 0;
+                if (this.y < 0) this.y = this.canvas.height;
             }
-            draw() {
+
+            draw(ctx) {
+                ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.globalAlpha = 1;
             }
         }
 
-        const particles2D = [];
-        for (let i = 0; i < 100; i++) {
-            particles2D.push(new Particle2D());
-        }
-
-        function animateParticles2D() {
-            ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
-            particles2D.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            requestAnimationFrame(animateParticles2D);
-        }
-        animateParticles2D();
-
-        // ============= BOTÕES =============
-        const simBtn = document.getElementById('simBtn');
-        const naoBtn = document.getElementById('naoBtn');
-        const celebration = document.getElementById('celebration');
-
-        simBtn.addEventListener('click', () => {
-            celebration.style.display = 'flex';
-            createFireworks();
-            createExplosion();
-        });
-
-        // Botão "Não" fugitivo
-        let naoAttempts = 0;
-        naoBtn.addEventListener('mouseenter', () => {
-            naoAttempts++;
-            const x = Math.random() * (window.innerWidth - 300) + 50;
-            const y = Math.random() * (window.innerHeight - 150) + 50;
-            naoBtn.style.position = 'fixed';
-            naoBtn.style.left = x + 'px';
-            naoBtn.style.top = y + 'px';
-            naoBtn.style.transition = 'all 0.3s ease';
-            
-            if (naoAttempts > 2) {
-                naoBtn.textContent = 'Clica no SIM! 🥺';
+        // ============= FIREWORKS MANAGER =============
+        class FireworksManager {
+            constructor() {
+                this.canvas = document.getElementById('fireworks');
+                this.ctx = this.canvas.getContext('2d', { alpha: true });
+                this.fireworks = [];
+                this.isActive = false;
             }
-            if (naoAttempts > 5) {
-                naoBtn.textContent = 'Por favor? 💕';
-                naoBtn.style.fontSize = '1.2em';
-            }
-            if (naoAttempts > 8) {
-                naoBtn.textContent = 'Vai... 🥹';
-                naoBtn.style.fontSize = '1em';
-            }
-        });
 
-        // ============= FOGOS DE ARTIFÍCIO =============
-        function createFireworks() {
-            const fireworksCanvas = document.getElementById('fireworks');
-            const fCtx = fireworksCanvas.getContext('2d');
-            fireworksCanvas.width = window.innerWidth;
-            fireworksCanvas.height = window.innerHeight;
+            init() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.canvas.style.display = 'block';
+                this.isActive = true;
+                this.startTime = Date.now();
+                this.createFireworks();
+                this.animate();
+            }
 
-            class Firework {
-                constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
-                    this.particles = [];
-                    for (let i = 0; i < 50; i++) {
-                        this.particles.push({
-                            x: x,
-                            y: y,
-                            vx: (Math.random() - 0.5) * 10,
-                            vy: (Math.random() - 0.5) * 10,
-                            alpha: 1,
-                            color: `hsl(${Math.random() * 60 + 300}, 100%, 60%)`
-                        });
+            createFireworks() {
+                this.interval = setInterval(() => {
+                    if (this.isActive) {
+                        const x = Utils.randomRange(this.canvas.width * 0.2, this.canvas.width * 0.8);
+                        const y = Utils.randomRange(this.canvas.height * 0.2, this.canvas.height * 0.5);
+                        this.fireworks.push(new Firework(x, y));
                     }
+                }, 200);
+
+                setTimeout(() => {
+                    this.isActive = false;
+                    clearInterval(this.interval);
+                }, 5000);
+            }
+
+            animate() {
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.fireworks = this.fireworks.filter(firework => {
+                    firework.update();
+                    firework.draw(this.ctx);
+                    return firework.particles.length > 0;
+                });
+
+                if (this.fireworks.length > 0 || this.isActive) {
+                    requestAnimationFrame(() => this.animate());
+                } else {
+                    setTimeout(() => {
+                        this.canvas.style.display = 'none';
+                    }, 1000);
                 }
-                update() {
-                    this.particles.forEach(p => {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.vy += 0.1;
-                        p.alpha -= 0.01;
-                    });
-                    this.particles = this.particles.filter(p => p.alpha > 0);
-                }
-                draw() {
-                    this.particles.forEach(p => {
-                        fCtx.globalAlpha = p.alpha;
-                        fCtx.fillStyle = p.color;
-                        fCtx.beginPath();
-                        fCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-                        fCtx.fill();
+            }
+        }
+
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                this.createParticles();
+            }
+
+            createParticles() {
+                const count = Utils.randomRange(40, 60);
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        x: this.x,
+                        y: this.y,
+                        vx: Utils.randomRange(-10, 10),
+                        vy: Utils.randomRange(-10, 10),
+                        alpha: 1,
+                        color: `hsl(${Utils.randomRange(300, 360)}, 100%, 60%)`,
+                        size: Utils.randomRange(2, 4)
                     });
                 }
             }
 
-            const fireworks = [];
-            function addFirework() {
-                const x = Math.random() * fireworksCanvas.width;
-                const y = Math.random() * fireworksCanvas.height * 0.5;
-                fireworks.push(new Firework(x, y));
+            update() {
+                this.particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.15; // Gravity
+                    p.alpha -= 0.015;
+                    p.vx *= 0.99; // Air resistance
+                });
+
+                this.particles = this.particles.filter(p => p.alpha > 0);
             }
 
-            const interval = setInterval(addFirework, 200);
+            draw(ctx) {
+                this.particles.forEach(p => {
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1;
+            }
+        }
 
-            function animateFireworks() {
-                fCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-                fCtx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+        // ============= HEART EXPLOSION =============
+        class HeartExplosion {
+            constructor() {
+                this.hearts = [];
+            }
+
+            create() {
+                const emojis = ['💕', '💖', '💗', '💓', '💝', '💘', '💞'];
+                const count = 100;
+
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                        heart.style.position = 'fixed';
+                        heart.style.left = window.innerWidth / 2 + 'px';
+                        heart.style.top = window.innerHeight / 2 + 'px';
+                        heart.style.fontSize = Utils.randomRange(20, 50) + 'px';
+                        heart.style.zIndex = '10000';
+                        heart.style.pointerEvents = 'none';
+                        document.body.appendChild(heart);
+
+                        const angle = (Math.PI * 2 * i) / count;
+                        const velocity = Utils.randomRange(5, 15);
+                        let vx = Math.cos(angle) * velocity;
+                        let vy = Math.sin(angle) * velocity;
+                        let x = window.innerWidth / 2;
+                        let y = window.innerHeight / 2;
+                        let rotation = 0;
+
+                        const move = setInterval(() => {
+                            x += vx;
+                            y += vy;
+                            vy += 0.5; // Gravity
+                            rotation += 10;
+                            heart.style.left = x + 'px';
+                            heart.style.top = y + 'px';
+                            heart.style.transform = `rotate(${rotation}deg)`;
+                            heart.style.opacity = Math.max(0, 1 - (y / window.innerHeight));
+
+                            if (y > window.innerHeight + 100) {
+                                clearInterval(move);
+                                heart.remove();
+                            }
+                        }, 20);
+
+                        this.hearts.push({ element: heart, interval: move });
+                    }, i * 10);
+                }
+            }
+
+            cleanup() {
+                this.hearts.forEach(({ element, interval }) => {
+                    clearInterval(interval);
+                    element.remove();
+                });
+                this.hearts = [];
+            }
+        }
+
+        // ============= BUTTON CONTROLLER =============
+        class ButtonController {
+            constructor() {
+                this.simBtn = document.getElementById('simBtn');
+                this.naoBtn = document.getElementById('naoBtn');
+                this.celebration = document.getElementById('celebration');
+                this.naoAttempts = 0;
+                this.messages = [
+                    'Não',
+                    'Tem certeza? 🥺',
+                    'Clica no SIM! 💕',
+                    'Por favor? 💖',
+                    'Só clica no SIM! 🥹',
+                    'Vai... 💝',
+                    'SIM é ali ➡️',
+                    'Última chance! 💗'
+                ];
+                this.init();
+            }
+
+            init() {
+                this.simBtn.addEventListener('click', () => this.handleYes());
+                this.naoBtn.addEventListener('mouseenter', () => this.handleNoHover());
+                this.naoBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.handleNoHover();
+                });
+            }
+
+            handleYes() {
+                this.celebration.style.display = 'flex';
                 
-                fireworks.forEach((fw, index) => {
-                    fw.update();
-                    fw.draw();
-                    if (fw.particles.length === 0) {
-                        fireworks.splice(index, 1);
+                const fireworks = new FireworksManager();
+                fireworks.init();
+                
+                const explosion = new HeartExplosion();
+                explosion.create();
+
+                // Cleanup after animation
+                setTimeout(() => {
+                    explosion.cleanup();
+                }, 8000);
+            }
+
+            handleNoHover() {
+                this.naoAttempts++;
+                
+                const maxX = window.innerWidth - 250;
+                const maxY = window.innerHeight - 100;
+                const x = Utils.randomRange(50, maxX);
+                const y = Utils.randomRange(50, maxY);
+                
+                this.naoBtn.style.position = 'fixed';
+                this.naoBtn.style.left = x + 'px';
+                this.naoBtn.style.top = y + 'px';
+                this.naoBtn.style.transition = 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                
+                const messageIndex = Math.min(this.naoAttempts, this.messages.length - 1);
+                this.naoBtn.textContent = this.messages[messageIndex];
+                
+                if (this.naoAttempts > 5) {
+                    this.naoBtn.style.fontSize = 'clamp(0.9em, 2.5vw, 1.2em)';
+                }
+                
+                if (this.naoAttempts > 10) {
+                    this.simBtn.style.transform = 'scale(1.2)';
+                }
+            }
+        }
+
+        // ============= APPLICATION INITIALIZATION =============
+        class Application {
+            constructor() {
+                this.sceneManager = null;
+                this.particlesManager = null;
+                this.customCursor = null;
+                this.buttonController = null;
+                this.init();
+            }
+
+            init() {
+                // Show loading screen
+                const loadingScreen = document.getElementById('loading-screen');
+
+                // Initialize components
+                this.customCursor = new CustomCursor();
+                this.sceneManager = new SceneManager();
+                this.particlesManager = new ParticlesManager();
+                this.buttonController = new ButtonController();
+
+                // Setup event listeners
+                this.setupEventListeners();
+
+                // Hide loading screen after initialization
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 1500);
+            }
+
+            setupEventListeners() {
+                // Optimized resize handler
+                window.addEventListener('resize', Utils.debounce(() => {
+                    if (this.sceneManager && this.sceneManager.renderer) {
+                        this.sceneManager.handleResize();
+                    }
+                    if (this.particlesManager) {
+                        this.particlesManager.handleResize();
+                    }
+                }, 250));
+
+                // Visibility change handler for performance
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        // Pause animations when tab is hidden
+                        if (this.sceneManager && this.sceneManager.clock) {
+                            this.sceneManager.clock.stop();
+                        }
+                    } else {
+                        // Resume animations when tab is visible
+                        if (this.sceneManager && this.sceneManager.clock) {
+                            this.sceneManager.clock.start();
+                        }
                     }
                 });
 
-                if (fireworks.length > 0 || Date.now() < startTime + 5000) {
-                    requestAnimationFrame(animateFireworks);
-                } else {
-                    clearInterval(interval);
-                }
-            }
-
-            const startTime = Date.now();
-            animateFireworks();
-        }
-
-        // ============= EXPLOSÃO DE CORAÇÕES =============
-        function createExplosion() {
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.textContent = ['💕', '💖', '💗', '💓', '💝'][Math.floor(Math.random() * 5)];
-                    heart.style.position = 'fixed';
-                    heart.style.left = window.innerWidth / 2 + 'px';
-                    heart.style.top = window.innerHeight / 2 + 'px';
-                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
-                    heart.style.zIndex = '10000';
-                    heart.style.pointerEvents = 'none';
-                    document.body.appendChild(heart);
-
-                    const angle = (Math.PI * 2 * i) / 100;
-                    const velocity = Math.random() * 10 + 5;
-                    let vx = Math.cos(angle) * velocity;
-                    let vy = Math.sin(angle) * velocity;
-                    let x = window.innerWidth / 2;
-                    let y = window.innerHeight / 2;
-                    let rotation = 0;
-
-                    const move = setInterval(() => {
-                        x += vx;
-                        y += vy;
-                        vy += 0.3;
-                        rotation += 10;
-                        heart.style.left = x + 'px';
-                        heart.style.top = y + 'px';
-                        heart.style.transform = `rotate(${rotation}deg)`;
-
-                        if (y > window.innerHeight + 100) {
-                            clearInterval(move);
-                            heart.remove();
-                        }
-                    }, 20);
-                }, i * 10);
+                // Cleanup on page unload
+                window.addEventListener('beforeunload', () => {
+                    if (this.sceneManager) {
+                        this.sceneManager.dispose();
+                    }
+                });
             }
         }
 
-        // ============= RESIZE =============
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            canvas2D.width = window.innerWidth;
-            canvas2D.height = window.innerHeight;
+        // ============= START APPLICATION =============
+        document.addEventListener('DOMContentLoaded', () => {
+            new Application();
         });
+
+        // ============= SERVICE WORKER FOR PWA (Optional) =============
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Uncomment to enable PWA features
+                // navigator.serviceWorker.register('/sw.js');
+            });
+        }
     </script>
 </body>
 </html>
